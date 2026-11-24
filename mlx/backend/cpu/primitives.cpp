@@ -147,7 +147,7 @@ void Arange::eval_cpu(const std::vector<array>& inputs, array& out) {
     if constexpr (std::is_same_v<T, bool>) {
       throw std::runtime_error("Bool type unsupported for arange.");
     } else {
-      arange<T>(start_, start_ + step_, out, out.size(), stream());
+      arange<T>(start_, step_, out, out.size(), stream());
     }
   });
 }

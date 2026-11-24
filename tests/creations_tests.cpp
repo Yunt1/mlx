@@ -120,6 +120,16 @@ TEST_CASE("test arange") {
 
     x = arange(0.0, 5.0, 1.5, bfloat16);
     CHECK(array_equal(x, array({0., 1.5, 3., 4.5}, bfloat16)).item<bool>());
+
+    // Regression tests for floating-point arange past 2^24 (f32), 2^11 (f16), 2^8 (bf16)
+    x = arange(0.0, static_cast<double>((1 << 24) + 5), 1.0, float32);
+    CHECK_EQ(take(x, array((1 << 24) + 4)).item<float>(), 16777220.0f);
+
+    x = arange(0.0, 2055.0, 1.0, float16);
+    CHECK_EQ(astype(take(x, array(2052)), float32).item<float>(), 2052.0f);
+
+    x = arange(0.0, 263.0, 1.0, bfloat16);
+    CHECK_EQ(astype(take(x, array(260)), float32).item<float>(), 260.0f);
   }
 }
 
